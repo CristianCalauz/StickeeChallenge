@@ -83,7 +83,7 @@ function packsToSend ($order, $iterator, $widgetPacks) {
 	// The recursive call of the function
 	$returnedArray = packsToSend($order - $widgetPacks[$iterator], $iterator, $widgetPacks);
 	
-	// This checks whether buying more small boxes has have less extra widgets, or whether buying a bix box will.
+	// This checks whether buying more small boxes has had less extra widgets, or whether buying a big box will.
 	if (($widgetPacks[$iterator - 1] - $order) <= (array_sum($returnedArray) - $order + $widgetPacks[$iterator])) {
 		return array ($widgetPacks[$iterator - 1]);
 	} else {
