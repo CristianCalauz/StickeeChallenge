@@ -99,7 +99,7 @@ function packsToSend ($order, $index, $widgetPacks) {
 
 // The function which checks which option orders less extra widgets.
 function betterPack($smallPacks, $mixedPacks, $order){
-	if($order - array_sum($smallPacks) < $order - array_sum($mixedPacks)) {
+	if(abs($order - array_sum($smallPacks)) < abs($order - array_sum($mixedPacks))) {
 		return $smallPacks;
 	} else {
 		return $mixedPacks;
