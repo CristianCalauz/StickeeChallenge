@@ -25,6 +25,7 @@ if($order > 0) {
 		// If the order is bigger than the biggest pack, order the big ones until others should be ordered
 		$bigPacks = floor($order / BIGGESTPACK);
 		$order -= $bigPacks * BIGGESTPACK;
+
 		if ($order < SMALLESTPACK) {
 			$smallOrder = array(SMALLESTPACK);
 		// If the number of widget packs is 2, only a part of the algorithm has to be run
@@ -110,7 +111,7 @@ function packsToSend ($order, $index, $widgetPacks) {
 
 // The function which checks which option orders less extra widgets.
 function betterPack($smallPacks, $mixedPacks, $order){
-	if(abs($order - array_sum($smallPacks)) < abs($order - array_sum($mixedPacks))) {
+	if($order - array_sum($smallPacks) < $order - array_sum($mixedPacks)) {
 		return $smallPacks;
 	} else {
 		return $mixedPacks;
