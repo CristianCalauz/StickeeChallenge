@@ -5,9 +5,9 @@ Number of widgets ordered <?php echo $_POST["order"]; ?><br>
 
 <?php  
 $order = $_POST["order"];
-$widgetPacks = array(250, 500, 1000, 2000, 5000);
+//$widgetPacks = array(250, 500, 1000, 2000, 5000);
 // More complicated pack sizes. Some orders to test these with: 2751, 2861, 2880, 310(this was a tricky one), 1310)
-// $widgetPacks = array(160,300, 413, 715, 1000, 4500);
+$widgetPacks = array(160, 300, 413, 715, 1000, 4500);
 
 // Some preprocessing
 array_unique($widgetPacks);
@@ -23,13 +23,25 @@ if($order > 0) {
 		echo SMALLESTPACK . " X 1";
 	} else {
 		// If the order is bigger than the biggest pack, order the big ones until others should be ordered
-		$bigPacks = floor($order / $widgetPacks[0]);
-		$order -= $bigPacks * $widgetPacks[0];
-	
-		// This is where the array that keeps track of all the boxes is made
-		$smallOrder = packsToSend($order, 0, $widgetPacks);
-		rsort($smallOrder);
-		
+		$bigPacks = floor($order / BIGGESTPACK);
+		$order -= $bigPacks * BIGGESTPACK;
+		if ($order < SMALLESTPACK) {
+			$smallOrder = array(SMALLESTPACK);
+		// If the number of widget packs is 2, only a part of the algorithm has to be run
+		} elseif (ARRAYLENGTH == 2) {
+			if ($bigPacks > 0) {
+				$bigPacks--;
+				$order += BIGGESTPACK;
+			}
+			$smallPacks = array(SMALLESTPACK, SMALLESTPACK);
+			$mixedPacks = array(SMALLESTPACK, BIGGESTPACK);
+			
+			$smallOrder = betterPack($smallPacks, $mixedPacks, $order);
+		} else {
+			// This is where the array that keeps track of all the boxes is made
+			$smallOrder = packsToSend($order, 0, $widgetPacks);
+			rsort($smallOrder);
+		}
 		// Output algorithm. 
 		// If the first element of smallOrder is the biggest box, that means only one box was ordered, thus the number of boxes is bigPacks + 1
 		if($smallOrder[0] == BIGGESTPACK) {
@@ -63,10 +75,9 @@ if($order > 0) {
 // more small boxes, than one of bigger size.
 function packsToSend ($order, $index, $widgetPacks) {
 	// The index represents a position which shows the box that is bigger than the order, and the one that is smaller than the order
-	while ($widgetPacks[$index] > $order) {
+	while (($widgetPacks[$index] > $order)  && ($index < ARRAYLENGTH - 1)) {
 		$index++;
 	}
-	
 	// If the order is the same as one of the boxes, order the box
 	if ($widgetPacks[$index] == $order) {
 		return array($order);
